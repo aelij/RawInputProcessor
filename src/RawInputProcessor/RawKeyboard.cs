@@ -181,10 +181,13 @@ namespace RawInputProcessor
             }
 
             RawKeyboardDevice device;
-            if (!_deviceList.TryGetValue(rawBuffer.header.hDevice, out device))
+            lock (_lock)
             {
-                Debug.WriteLine("Handle: {0} was not in the device list.", rawBuffer.header.hDevice);
-                return false;
+                if (!_deviceList.TryGetValue(rawBuffer.header.hDevice, out device))
+                {
+                    Debug.WriteLine("Handle: {0} was not in the device list.", rawBuffer.header.hDevice);
+                    return false;
+                }
             }
 
             var isE0BitSet = ((flags & Win32Consts.RI_KEY_E0) != 0);

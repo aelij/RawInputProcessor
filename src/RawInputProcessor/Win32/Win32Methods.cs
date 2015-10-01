@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Interop;
-using Microsoft.Win32;
 
 namespace RawInputProcessor.Win32
 {
@@ -140,7 +139,9 @@ namespace RawInputProcessor.Win32
 
         public static string GetDeviceDescription(string device)
         {
-            RegistryKey deviceKey = RegistryAccess.GetDeviceKey(device);
+            var deviceKey = RegistryAccess.GetDeviceKey(device);
+            if (deviceKey == null) return string.Empty;
+
             string text = deviceKey.GetValue("DeviceDesc").ToString();
             return text.Substring(text.IndexOf(';') + 1);
         }
